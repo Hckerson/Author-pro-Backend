@@ -3,6 +3,8 @@ export class CreatePostDto {
   slug: string;
   excerpt: string;
   content: string;
+  featured: boolean;
+  status: 'DRAFTED' | 'PUBLISHED';
   date: string;
   coverImage: string;
   readingTime: number;

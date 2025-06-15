@@ -14,17 +14,17 @@ export class PostController {
 
   @Get()
   findAll() {
-    return this.postService.findAll();
+    return this.postService.findAllPost();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @Get(':slug')
+  findOne(@Param('slug') slug: string) {
+    return this.postService.findOne(slug);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  @Patch(':slug')
+  update(@Param('slug') slug: string, @Body() updatePostDto: UpdatePostDto) {
+    return this.postService.update(slug, updatePostDto);
   }
 
   @Delete(':id')
