@@ -16,30 +16,43 @@ export class PostService {
   async findAllPost(): Promise<Post[]> {
     console.log(`Finding posts:`);
     const allPost = await this.prisma.post.findMany();
-    return allPost
+    return allPost;
   }
 
-  async fetchRelatedPost(categories: string[]): Promise<Post[]>{
-    const response = await this.prisma.post.findMany()
-    return response
+  async fetchRelatedPost(categories: string[]): Promise<Post[]> {
+    // Find related post
+    const response = await this.prisma.post.findMany({
+      where: {
+        categories: { hasSome: [...categories] },
+      },
+    });
+    return response;
   }
 
-  async findOne(slug: string): Promise<Post | null> {
+  async findOne(
+    slug: string,
+  ): Promise<{ post: Post; relatedPost: Post[] } | undefined> {
     console.log(`Finding specific post`);
     const post = await this.prisma.post.findUnique({
       where: {
         slug: slug,
       },
     });
-    return post;
+    if (!post) return;
+    const { categories } = post;
+    const relatedPost = await this.fetchRelatedPost(categories);
+    return { post, relatedPost };
   }
 
   async update(slug: string, updatePostDto: UpdatePostDto) {
-    const response = await this.prisma.post.update({where: {
-      slug : slug
-    }, data: {
-      status : updatePostDto.status
-    }})
+    const response = await this.prisma.post.update({
+      where: {
+        slug: slug,
+      },
+      data: {
+        status: updatePostDto.status,
+      },
+    });
   }
 
   async remove(id: number) {
